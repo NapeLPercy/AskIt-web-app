@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="/AskIt/Login.js" defer></script>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: #343a40;
+
+                margin: 0;
+            }
+            .form-container {
+                background-color: lightgray;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                width: 300px;
+            }
+            .form-container h2 {
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            .form-group {
+                margin-bottom: 15px;
+            }
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+            }
+            .form-group input {
+                width: 100%;
+                padding: 8px;
+                box-sizing: border-box;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            .form-group p.error {
+                color: red;
+                font-size: 12px;
+                margin: 5px 0 0;
+            }
+            .form-group p {
+                margin: 5px 0 0;
+            }
+            .form-container button {
+                width: 100%;
+                padding: 10px;
+                background-color: #007bff;
+                border: none;
+                color: #fff;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            .form-container button:hover {
+                background-color: #0056b3;
+            }
+            .form-container .signup-link {
+                text-align: center;
+                margin-top: 10px;
+            }
+
+            .form-container .signup-link a,#forgot-password-link {
+                color: #007bff;
+                text-decoration: none;
+            }
+
+            #forgot-password-link{
+                margin-left: 33px;
+            }
+
+            .form-container .signup-link a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="form-container">
+            <h2>Login</h2>
+            <form id="login_form" action="/AskIt/Views/Menu.jsp">
+                <div class="form-group">
+                    <label for="number">Mobile phone</label>
+                    <input type="number" id="number" name="number"/>
+                    <p id="number_error" class="error"></p>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password"/>
+                    <p id="password_error" class="error"></p>
+                </div>
+                <div class="form-group">
+                    <p id="login_error" class="error"></p>
+                </div>
+
+                <div>
+                    <p><a href="#" id="forgot-password-link">Forgot password</a></p>
+                </div>
+                <button type="submit" id="login_btn">LOGIN</button>
+                <div class="signup-link">
+                    <p>Don't have an account? <a href="/Socialize/Views/Inputs/CreateAccount.jsp">Sign up</a></p>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
+
+<!-- 
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="Models.Post" %>
+<%@ page import="Models.Comment" %>
+<%@ page import="Models.Video" %>
+<%@ page import="Models.Image" %>
+<%@ page import="java.util.*" %>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Posts List</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="/Socialize/MyPosts.js" defer></script>
+        <style>
+            .post-container {
+                max-width: 600px;
+                margin: 20px auto;
+                padding: 15px;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: lightgray;
+            }
+            .media-container img, .media-container video {
+                width: 100%;
+                border-radius: 10px;
+                margin-top: 10px;
+            }
+            .reactions-container {
+                display: flex;
+                align-items: center;
+                margin-top: 10px;
+                justify-content: space-between;
+                flex-wrap: nowrap;
+            }
+            .reaction-item {
+                display: flex;
+                align-items: center;
+                flex: 1; /* Ensures items take up equal space */
+                justify-content: center; /* Center items within their container */
+            }
+            .reaction-item img {
+                margin-right: 5px;
+            }
+            .reaction-item p {
+                margin: 0;
+            }
+            @media (max-width: 600px) {
+                .reactions-container {
+                    justify-content: space-between; /* Adjust as needed */
+                }
+                .reaction-item {
+                    margin-right: 10px; /* Adjust as needed for spacing */
+                }
+            }
+
+            body{
+                background-color: #343a40;
+                font-family: Arial;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <%
+            ArrayList<Post> posts = (ArrayList<Post>)request.getAttribute("posts");
+            for (Post post : posts) {
+                String message = post.getMessage();
+                int likeCount = post.getLikeCount();
+                int dislikeCount = post.getDislikeCount();
+                Date date = post.getCreationDate();
+                Video video = post.getPostVideo();
+                Image image = post.getPostImage();
+                int postId = post.getPostId();
+                
+                String imageUrl = null;
+                String videoUrl = null;
+                if (image != null) {
+                    imageUrl = Base64.getEncoder().encodeToString(image.getImage());
+                }
+                if (video != null) {
+                    videoUrl = Base64.getEncoder().encodeToString(video.getVideo());
+                }
+            %>
+            <div class="post-container" id="<%=postId%>">
+                <p><strong><%=message%></strong></p>
+                <p><%=date%></p>
+                <%
+                if (image != null || video != null) {
+                %>
+                <div class="media-container">
+                    <%
+                    if (image != null) {
+                    %>
+                    <img src="data:image/png;base64,<%=imageUrl%>" alt="Post Image"/>
+                    <%
+                    }
+                    if (video != null) {
+                    %>
+                    <video controls>
+                        <source src="data:video/mp4;base64,<%=videoUrl%>" type="video/mp4">
+                    </video>
+                    <%
+                    }
+                    %>
+                </div>
+                <%
+                }
+                %>
+                <div class="reactions-container">
+                    <div class="reaction-item">
+                        <img src="Icons/likelight.png" id="like" class="reaction" width="20" height="20" alt="like"/>
+                        <p><%=likeCount%></p>
+                    </div>
+                    <div class="reaction-item">
+                        <img src="Icons/dislikelight.png"  id="dislike" class="reaction"  width="20" height="20" alt="dislike"/>
+                        <p><%=dislikeCount%></p>
+                    </div>
+                    <div class="reaction-item">
+                        <img src="Icons/comment.png" class="comment" width="20" height="20" alt="comment"/>
+                        <p>0</p>
+                    </div>
+                </div>
+                <div id="comments-container"></div>
+            </div>
+            <%
+            }
+            %>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+</html>
+--!>
+
